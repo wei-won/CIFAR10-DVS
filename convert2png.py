@@ -21,6 +21,7 @@ class CIFAR10_DVS:
             if os.path.isdir(os.path.join(self.url, f)):
                 self.labels.append(f)
 
+
         for obj_class in self.labels:
             obj_path = os.path.join(self.url, obj_class)
 
