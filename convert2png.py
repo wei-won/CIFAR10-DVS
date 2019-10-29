@@ -2,26 +2,29 @@ import os
 import numpy as np
 import tarfile
 import csv
+import aer
 from shutil import copyfile
 import matplotlib.pyplot as plt
 from scipy import misc
 
 
-class DVS:
+class CIFAR10_DVS:
     # TODO add label list and check how data should be reshaped
     def __init__(self):
         self.url  = os.path.join(os.path.abspath(os.path.dirname(__file__)), "data/")
-        self.name = 'CharDVS.tar.gz'
-        self.working_dir  = os.path.join(os.path.dirname(__file__), "out/")
+        self.working_dir  = os.path.join(os.path.dirname(__file__), "png_out/")
 
-        # Extract the file
-        copyfile(self.url+self.name, os.path.join(self.working_dir, self.name))
-        tar = tarfile.open(os.path.join(self.working_dir, self.name), "r:gz")
-        tar.extractall(self.working_dir)
-
+        self.datasetContents = os.listdir(self.url)
         self.datafilenames = []
         self.labels = []
-        lbl_filepath = os.path.join(self.working_dir, "CharDVS_data", "CharDVS_labels.csv")
+        for f in self.datasetContents:
+            if os.path.isdir(os.path.join(self.url, f)):
+                self.labels.append(f)
+
+        for obj_class in self.labels:
+            obj_path = os.path.join(self.url, obj_class)
+
+
         if os.path.exists(lbl_filepath):
             with open(lbl_filepath, 'r') as csvfile:
                 csvreader = csv.reader(csvfile, delimiter=',')
@@ -40,7 +43,7 @@ class DVS:
                 print("Failed to find data file " + fname)
 
 
-dvs = DVS()
+dvs = CIFAR10_DVS()
 dvs_train = dvs.events[:36]
 dvs_test = dvs.events[36:72]
 dvs_labels = dvs.labels[:36]
