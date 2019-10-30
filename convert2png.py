@@ -2,7 +2,8 @@ import os
 import numpy as np
 import tarfile
 import csv
-import aer
+# import aer
+from dv import LegacyAedatFile
 from shutil import copyfile
 import matplotlib.pyplot as plt
 from scipy import misc
@@ -21,12 +22,16 @@ class CIFAR10_DVS:
             if os.path.isdir(os.path.join(self.url, f)):
                 self.labels.append(f)
 
-
         for obj_class in self.labels:
+        # obj_class = "airplane"
             obj_path = os.path.join(self.url, obj_class)
             for sample in os.listdir(obj_path):
                 if sample.endswith(".aedat"):
-                    events = aer.AEData(os.path.join(obj_path, sample))
+                    # events = aer.AEData(os.path.join(obj_path, sample))
+                    with LegacyAedatFile(os.path.join(obj_path, sample)) as f:
+                        for event in f:
+                            print(event)
+                        print(f.names)
 
         if os.path.exists(lbl_filepath):
             with open(lbl_filepath, 'r') as csvfile:
